@@ -31,12 +31,7 @@ namespace TestConsole
     }
     class Program
     {
-        //public static string AWSCloudSearchKey = "imbd-movie-s73byoqpg3zr23xxbpczykppmq.us-west-2.cloudsearch.amazonaws.com";
-        
-        static void Callback(IAsyncResult result)
-        {
-            string hostName = (string)result.AsyncState;
-        }
+               
         static void Main(string[] args)
         {
 
