@@ -10,12 +10,17 @@ namespace AmazingCloudSearch.Query.Boolean
     {
         public string Field { get; set; }
         public string Condition { get; set; }
+        protected bool mIsOrCondition { get; set; }
 
-        public StringBooleanCondition(string field, string condition)
+        public StringBooleanCondition(string field, string condition, bool isOrCondition = false)
         {
             Field = field;
             Condition = condition;
+            mIsOrCondition = isOrCondition;
         }
+
+
+       
 
         public string GetCondictionParam()
         {
@@ -24,8 +29,12 @@ namespace AmazingCloudSearch.Query.Boolean
 
 		public bool IsOrCondition()
 		{
-			return false;
+			return mIsOrCondition;
 		}
+        public void IsOrCondition(bool val)
+        {
+            mIsOrCondition = val;
+        }
 
 		public bool IsList()
 		{

@@ -12,48 +12,28 @@ using Amazon.CloudSearchDomain.Model;
 using Amazon.CloudSearchDomain;
 using AmazingCloudSearch.Query.Facets;
 using Newtonsoft.Json.Linq;
-using AmazingCloudSearch.Query.Boolean;
 
 namespace TestConsole
 {
-
-    //The JsonProperty is important to declare for doing CRUD and search
-    //The actual property name is important for search, and needs to match exactly to the JsonProperty name,
-    //e.g. you cannot have property name Title and JsonProperty title.  Both need to be title, one of the index
-    //values of the cloudsearch domain
-    public class InventoryItem : SearchDocument
+    public class Movie : SearchDocument
     {
-        [JsonProperty("addl_descr_1")]
-        public string addl_descr_1 { get; set; }
+        //The JsonProperty is important to declare for doing CRUD and search
+        //The actual property name is important for search, and needs to match exactly to the JsonProperty name,
+        //e.g. you cannot have property name Title and JsonProperty title.  Both need to be title, one of the index
+        //values of the cloudsearch domain
+        [JsonProperty("title")]
+        public string title { get; set; }
 
-        [JsonProperty("descr")]
-        public string descr	 { get; set; }
+        
+        [JsonProperty("directors")]
+        public List<string> directors { get; set; }
 
-        [JsonProperty("descr_upr")]
-        public string descr_upr	{ get; set; }
+        [JsonProperty("actors")]
+        public List<string> actors { get; set; }
 
-        [JsonProperty("item_no")]        
-        public int item_no	{ get; set; }
-
-        [JsonProperty("long_descr")]   
-        public string long_descr	{ get; set; }
-
-        [JsonProperty("user_action")]
-        public string user_action	{ get; set; }
-
-        [JsonProperty("user_caliber_gauge")]        
-        public string user_caliber_gauge	{ get; set; }
-
-        [JsonProperty("user_is_firearm")]                
-        public string user_is_firearm	{ get; set; }
-
-        [JsonProperty("user_manufacturer")]                
-        public string user_manufacturer{ get; set; }
-
-        [JsonProperty("user_model")]                        
-        public string user_model { get; set; }
+        [JsonProperty("year")]
+        public int year { get; set; }
     }
-
     class Program
     {
         public static void Results(string query, string caliber, string action, string brand, string capacity)
@@ -82,7 +62,7 @@ namespace TestConsole
             oConfig.RegionEndpoint = Amazon.RegionEndpoint.APSoutheast1;
             //
             
-            oConfig.ServiceURL = "http://search-" + WebConfigurationManager.AppSettings["AWSCloudSearchKey"];
+            oConfig.ServiceURL = WebConfigurationManager.AppSettings["AWSCloudSearchKeyCustom"];
             oClient = new AmazonCloudSearchDomainClient(oConfig);
             oReq.Query = query;
 
@@ -188,100 +168,133 @@ namespace TestConsole
 
 
         }
-        
-       
+        public static string json = @"{
+	'status': {
+		'rid': 'wv/qscoqtxgKJAq3',
+		'time-ms': 3
+	},
+	'hits': {
+		'found': 9,
+		'start': 0,
+		'hit': null
+	},
+	'facets': {
+		'genres': {
+			'buckets': [{
+				'value': 'Adventure',
+				'count': 9
+			},
+			{
+				'value': 'Action',
+				'count': 8
+			},
+			{
+				'value': 'Sci-Fi',
+				'count': 8
+			},
+			{
+				'value': 'Fantasy',
+				'count': 6
+			},
+			{
+				'value': 'Comedy',
+				'count': 1
+			},
+			{
+				'value': 'Drama',
+				'count': 1
+			}]
+		}
+	}
+}";
+
+        public class myBucket
+        {
+            public string value { get; set; }
+            public int count { get; set; }
+        }
+        public class myFacet
+        {
+            public string name { get; set; }
+            public List<myBucket> buckets { get; set; }
+            public myFacet()
+            {
+                buckets = new List<myBucket>();
+            }
+        }
         static void Main(string[] args)
         {
-           
-            //Example of using a similar format as source code given.  This uses the AWS cloudsearch library directly
-            Results("9mm", string.Empty, string.Empty, string.Empty, string.Empty);
+            /*List<myFacet> facets = new List<myFacet>();
+            dynamic jsonArray = JsonConvert.DeserializeObject(json);
+            dynamic facetsArray = jsonArray.facets;
+            foreach(dynamic facet in facetsArray)
+            {
+                myFacet facetObj = new myFacet();
+                facetObj.name = facet.Name;
+
+                
+                foreach(dynamic bucket in facet.Value.buckets)
+                {
+                    myBucket bucketObj = new myBucket();
+                    bucketObj.count = bucket.count;
+                    bucketObj.value = bucket.value;
+                    facetObj.buckets.Add(bucketObj);
+                    int debug = 0;
+                    string value = bucket.value;
+                    int count = bucket.count;
+                }
+                facets.Add(facetObj);
+            }
+
+            return;*/
+
+            //Results("9mm", string.Empty, string.Empty, string.Empty, string.Empty);
             //return;
 
             string awsAccessKey = WebConfigurationManager.AppSettings["AWSCloudSearchKey"];
 
-            var cloudSearch = new CloudSearch<InventoryItem>(awsAccessKey, "2013-01-01");
-
-            InventoryItem item = new InventoryItem();
-            item.addl_descr_1 = "DTG-XDS-9MM";
-            item.descr = "DTG XDS 9MM";
-            item.descr_upr = "DTG XDS 9MM";
-            item.id = Guid.NewGuid().ToString();
-            item.item_no = 9999;
-            item.long_descr = "DTG XDS 9MM";
-            item.user_action = "MANUAL";
-            item.user_caliber_gauge = "14MM";
-            item.user_is_firearm = "N";
-            item.user_manufacturer = "PROVIDENCE";
-            item.user_model = "Peabody";
+            var cloudSearch = new CloudSearch<Movie>(awsAccessKey, "2013-01-01");
+            var movie = new Movie
+            {
+                id = "fjuhewdijsdjoi",//Guid.NewGuid().ToString(),
+                
+                title = "Redneck Zombies",
+                directors = new List<string>
+                {
+                    "Pericles Lewnes"
+                },
+                actors = new List<string>
+                {
+                    "Steve Sooy",
+                    "Anthony M. Carr"
+                },
+                
+                year = 1989,
+            };
+            
+            
+            
+            
             
 
             //CRUD 
-            cloudSearch.Add(item);
-            item.user_model = "Winchester";
-            cloudSearch.Update(item);            
-            cloudSearch.Delete(item);
-            
+            //cloudSearch.Add(movie);
+            //movie.actors.Add("Ken Davis");
+            //cloudSearch.Update(movie);            
+            //cloudSearch.Delete(movie);
+
 
             //SEARCH
-            
-            var searchQuery = new SearchQuery<InventoryItem> { Keyword = "9mm" };
+
+            var searchQuery = new SearchQuery<Movie> { Keyword = "star wars" };
             var found = cloudSearch.Search(searchQuery);
 
-            var liFacet = new List<Facet> ();
-            liFacet.Add(new Facet { Name = "user_caliber_gauge" });
-            liFacet.Add(new Facet { Name = "user_action" });
-            liFacet.Add(new Facet { Name = "user_is_firearm" });
 
 
-            searchQuery = new SearchQuery<InventoryItem> { Keyword = "9mm", Facets = liFacet };
-            found = cloudSearch.Search(searchQuery);
+            var genreFacet = new Facet { Name = "genres" };
+            var liFacet = new List<Facet> { genreFacet };
 
-
-            string keyword = "XDS";
-            string gauge = "9MM";
-            string action = "SEMI AUTO";
-            string manufacturer = "";//"SPRINGFIELD";
-
-            StringBooleanCondition gaugeCondition = null;
-            StringBooleanCondition actionCondition = null;
-            StringBooleanCondition manufacturerCondition = null;
-
-            BooleanQuery bQuery = null;
-            //caliber action brand capacity
-            if(!string.IsNullOrEmpty(gauge))
-                gaugeCondition = new StringBooleanCondition("user_caliber_gauge", "9MM", true);
-            if (!string.IsNullOrEmpty(action))
-                actionCondition = new StringBooleanCondition("user_action", "SEMI AUTO", true);
-            if (!string.IsNullOrEmpty(manufacturer))            
-                manufacturerCondition = new StringBooleanCondition("user_manufacturer", "SPRINGFIELD", false);
-            
-            //var yCondition = new IntBooleanCondition("year");
-            //yCondition.SetInterval(2000, 2004);
-
-            if (gaugeCondition != null)
-            {
-                bQuery = new BooleanQuery();
-                bQuery.Conditions.Add(gaugeCondition);
-            }
-            if (actionCondition != null)
-            {
-                if(bQuery == null)
-                    bQuery = new BooleanQuery();
-                bQuery.Conditions.Add(actionCondition);
-            }
-            if (manufacturerCondition != null)
-            {
-                if (bQuery == null)
-                    bQuery = new BooleanQuery();
-                bQuery.Conditions.Add(manufacturerCondition);
-            }
-
-            
-
-            searchQuery = new SearchQuery<InventoryItem>();// { Size = 20, BooleanQuery = bQuery };
-            searchQuery.BooleanQuery = bQuery;
-            searchQuery.Keyword = keyword;
-            searchQuery.Facets = liFacet;
+            searchQuery = new SearchQuery<Movie> { Keyword = "star wars", Facets = liFacet };
             found = cloudSearch.Search(searchQuery);
         }
     }

@@ -38,14 +38,19 @@ namespace AmazingCloudSearch.Builder
 			var url = new StringBuilder(_searchUri);
 			url.Append("?");
 
-            if (!string.IsNullOrEmpty(query.Keyword))
+            if(!string.IsNullOrEmpty(query.Keyword) && query.BooleanQuery != null)
+            {
+                FeedKeywordAndBooleanQuery(query.Keyword, query.BooleanQuery, url);
+            }
+
+            else if (!string.IsNullOrEmpty(query.Keyword))
             {
 
                 FeedKeyword(query.Keyword, url);
             }
 
 
-            if (query.BooleanQuery != null)
+            else if (query.BooleanQuery != null)
             {
                 FeedBooleanCritera(query.BooleanQuery, url);
             }
@@ -104,24 +109,59 @@ namespace AmazingCloudSearch.Builder
 			return url.ToString();
 		}
 
+        private void FeedKeywordAndBooleanQuery(string keyword,BooleanQuery booleanQuery, StringBuilder url)
+        {
+            bool hasParameters = (url.Length > 0);
+            if (hasParameters)
+            {
+                url.Append("&");
+            }
+
+            url.Append("q.parser=structured&q=(and+'");
+            FeedKeywordInternal(keyword, url);
+            url.Append("'+");
+            FeedBooleanCriteraInternal(booleanQuery, url);
+            url.Append(")");
+
+        }
+        private void FeedKeywordInternal(string keyword, StringBuilder url)
+        {
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                keyword = plusRegex.Replace(keyword, " ");
+                keyword = Uri.EscapeDataString(keyword);
+
+
+                url.Append(urlEncodedSpaceRegex.Replace(keyword, "+"));
+            }
+        }
 		private void FeedKeyword(string keyword, StringBuilder url)
 		{
-			if (!string.IsNullOrEmpty(keyword))
-			{
-				keyword = plusRegex.Replace(keyword, " ");
-				keyword = Uri.EscapeDataString(keyword);
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                url.Append("q=");
+            }
+            FeedKeywordInternal(keyword, url);
 
-				url.Append("q=");
-				url.Append(urlEncodedSpaceRegex.Replace(keyword, "+"));				
-			}
+			
 		}
-
         private void FeedBooleanCritera(BooleanQuery booleanQuery, StringBuilder url)
+        {
+            bool hasParameters = (url.Length > 0);
+            if (hasParameters)
+            {
+                url.Append("&");
+            }
+
+            url.Append("q.parser=structured&q=");
+            FeedBooleanCriteraInternal(booleanQuery, url);
+        }
+        private void FeedBooleanCriteraInternal(BooleanQuery booleanQuery, StringBuilder url)
         {
             if(booleanQuery.Conditions == null || booleanQuery.Conditions.Count == 0)
                 return;
 
-			bool hasParameters = (url.Length > 0);
+			//bool hasParameters = (url.Length > 0);
 
 			StringBuilder andConditions = new StringBuilder();
 			StringBuilder orConditions = new StringBuilder();
@@ -141,7 +181,7 @@ namespace AmazingCloudSearch.Builder
 			}
 
 			List<string> booleanConditions = new List<string>();
-
+            int count = 0;
 			if (andConditions.Length > 0)
 			{
 				andConditions.Remove(andConditions.Length - 1, 1);
@@ -153,35 +193,33 @@ namespace AmazingCloudSearch.Builder
 				orConditions.Remove(orConditions.Length - 1, 1);
 				listOrCondintions.Add(orConditions.ToString());
 			}
-			
+            
 			if (listOrCondintions.Count == 1)
 			{
 				booleanConditions.Add("or+" + listOrCondintions[0]);
 			}
 			else if (listOrCondintions.Count > 1)
 			{
+                
 				orConditions.Clear();
 				orConditions.Append("and");
-
-				foreach (string listOrCondintion in listOrCondintions)
-				{
-					orConditions.Append("+(or+");
-					orConditions.Append(listOrCondintion);
-					orConditions.Append(")");
-				}
-
+                orConditions.Append("+(or+");
+                
+                for (int i = 0; i < listOrCondintions.Count; ++i )
+                {
+                    orConditions.Append(listOrCondintions[i]);
+                    if (i < listOrCondintions.Count - 1)
+                        orConditions.Append("+");
+                        
+                }
+                orConditions.Append(")");
 				booleanConditions.Add(orConditions.ToString());
 			}
 
-			if (hasParameters)
-			{
-				url.Append("&");
-			}
-
-			url.Append("bq=");
+			
 
 			string postpendBooleanCondition = null;
-			int count = 0;
+            count = 0;
 			foreach (string booleanCondition in booleanConditions)
 			{
 				if (count > 0)
@@ -238,15 +276,15 @@ namespace AmazingCloudSearch.Builder
 				url.Append("&");
 			}
 
-            url.Append("facet=");
+            //url.Append("facet=");
 
             Facet lastItem = facets.Last();
             foreach (var facet in facets)
             {
-                url.Append(facet.Name);
-
+                url.Append("facet."+facet.Name+"={}");
+                //url.Append(facet.Name);
                 if (!object.ReferenceEquals(lastItem, facet))
-                    url.Append(",");
+                    url.Append("&");
             }
 
         }
