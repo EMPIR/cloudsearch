@@ -1,0 +1,82 @@
+﻿@model WebApplication1.Models.ViewModels.QueryForm
+@{
+    ViewBag.Title = "Results";
+}
+
+<h2>Results</h2>
+<h2>Search Parameters</h2>
+<p>Keyword: @Model.Keyword</p>
+<p>UserAction: @Model.UserAction</p>
+<p>Gauge: @Model.Gauge</p>
+<p>Manufacturer: @Model.Manufacturer</p>
+<h3>Total Found @Model.SearchResults.hits.found</h3>
+<p>
+    @if (Model.Start != 0)
+    {
+        @Html.ActionLink("First", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = 0, SearchResults = null })
+        @:|
+        @Html.ActionLink("Previous", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.Start - 10, SearchResults = null })
+        @:|
+    }
+    @(Model.Start + 1) to @(Model.Start + 10)
+    @if (Model.Start < Model.SearchResults.hits.found - 10)
+    {
+        @:|
+         @Html.ActionLink("Next", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.Start + 10, SearchResults = null })
+         @:|
+         @Html.ActionLink("Last", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.SearchResults.hits.found - 10, SearchResults = null })
+        
+    }
+</p>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>USER ACTION</th>
+        <th>CALIBER GAUGE</th>
+        <th>IS FIREARM</th>
+        <th>DESCRIPTION</th>
+        <th>MANUFACTURER</th>
+    </tr>
+
+    @foreach (dynamic hit in Model.SearchResults.hits.hit)
+    {
+        <tr>
+            <td>@hit.id</td>
+            <td>@hit.data.user_action</td>
+            <td>@hit.data.user_caliber_gauge</td>
+            <td>@hit.data.user_is_firearm</td>
+            <td>@hit.data.descr</td>
+            <td>@hit.data.user_manufacturer</td>
+        </tr>
+    }
+
+</table>
+
+<h3>Facets</h3>
+@foreach(dynamic facet in Model.SearchResults.facetsResults)
+{
+    <p>@facet.Name</p>
+    <ol>
+        @foreach (dynamic bucket in facet.Buckets)
+        {
+            <li>
+                @{string linkStr = @bucket.value +"("+@bucket.count+")";}
+                @if(facet.Name == "user_action")
+                { 
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = bucket.value, Start = 0, SearchResults = null })
+                }
+                else if(facet.Name == "user_caliber_gauge")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = bucket.value, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = 0, SearchResults = null })
+                }
+                else if(facet.Name == "user_is_firearm")
+                {
+                    @linkStr
+                }
+            </li>
+        }
+
+    </ol>
+}
+
+@Html.ActionLink("Go Back", "Index");

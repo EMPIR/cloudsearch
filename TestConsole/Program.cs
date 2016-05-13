@@ -283,6 +283,8 @@ namespace TestConsole
             searchQuery.Keyword = keyword;
             searchQuery.Facets = liFacet;
             found = cloudSearch.Search(searchQuery);
+
+            
         }
     }
 }

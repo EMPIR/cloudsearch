@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmazingCloudSearch", "AmazingCloudSearch.csproj", "{83228930-5000-4D7D-9C26-86DFEC265229}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "..\TestConsole\TestConsole.csproj", "{00A8A8F4-0163-4184-9C47-60DE6024DA85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "..\WebApplication1\WebApplication1.csproj", "{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,16 @@ Global
 		{00A8A8F4-0163-4184-9C47-60DE6024DA85}.Release|Mixed Platforms.Build.0 = Release|x86
 		{00A8A8F4-0163-4184-9C47-60DE6024DA85}.Release|x86.ActiveCfg = Release|x86
 		{00A8A8F4-0163-4184-9C47-60DE6024DA85}.Release|x86.Build.0 = Release|x86
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{96A4CFF3-95EB-40B8-982A-DA9707F5E00C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
