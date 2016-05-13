@@ -68,9 +68,9 @@ namespace WebApplication1.Models
             BooleanQuery bQuery = null;
             //caliber action brand capacity
             if (!string.IsNullOrEmpty(gauge))
-                gaugeCondition = new StringBooleanCondition("user_caliber_gauge", gauge, true);
+                gaugeCondition = new StringBooleanCondition("user_caliber_gauge", gauge, false);
             if (!string.IsNullOrEmpty(useraction))
-                actionCondition = new StringBooleanCondition("user_action", useraction, true);
+                actionCondition = new StringBooleanCondition("user_action", useraction, false);
             if (!string.IsNullOrEmpty(manufacturer))
                 manufacturerCondition = new StringBooleanCondition("user_manufacturer", manufacturer, false);
 
