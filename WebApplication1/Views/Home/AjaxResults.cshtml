@@ -1,0 +1,143 @@
+﻿
+@model WebApplication1.Models.ViewModels.QueryForm
+
+@if (Model.SearchResults != null)
+{ 
+<h2>Results</h2>
+    
+<h2>Search Parameters</h2>
+if(Model.Keyword != string.Empty){
+    <p>Keyword: @Model.Keyword</p>
+}
+if(!string.IsNullOrEmpty(Model.mAction)){
+    <p>Action: @Model.mAction</p>
+}
+if(!string.IsNullOrEmpty(Model.Barrellength)){
+    <p>Barrel Length: @Model.Barrellength</p>
+}
+if(!string.IsNullOrEmpty(Model.Brand)){
+    <p>Brand: @Model.Brand</p>
+}
+if(!string.IsNullOrEmpty(Model.Caliber)){
+    <p>Caliber: @Model.Caliber</p>
+}
+if(!string.IsNullOrEmpty(Model.Category)){
+    <p>Category: @Model.Category</p>
+}
+if(!string.IsNullOrEmpty(Model.Color)){
+    <p>Color: @Model.Color</p>
+}
+if(!string.IsNullOrEmpty(Model.Department)){
+    <p>Department: @Model.Department</p>
+}
+if(!string.IsNullOrEmpty(Model.Finish)){
+    <p>Finish: @Model.Finish</p>
+}
+if(!string.IsNullOrEmpty(Model.Rating)){
+    <p>Rating: @Model.Rating</p>
+}
+if(!string.IsNullOrEmpty(Model.Type)){
+    <p>Type: @Model.Type</p>
+}
+<h3>Total Found @Model.SearchResults.hits.found</h3>
+<p>
+    @if (Model.Start != 0)
+    {
+        @Ajax.ActionLink("First", "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+        @:|
+        @Ajax.ActionLink("Previous", "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = Model.Start - 10, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+        @:|
+    }
+    @(Model.Start + 1) to @(Model.Start + 10)
+    @if (Model.Start < Model.SearchResults.hits.found - 10)
+    {
+        @:|
+        @Ajax.ActionLink("Next", "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = Model.Start + 10, SearchResults = null }, new AjaxOptions { UpdateTargetId="dvResults", InsertionMode=InsertionMode.Replace, HttpMethod="GET" })
+        @:|
+        @Ajax.ActionLink("Last", "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = Model.SearchResults.hits.found - 10, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+
+    }
+</p>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>ACTION</th>
+        <th>CALIBER GAUGE</th>
+        <th>COLOR</th>
+        <th>DESCRIPTION</th>
+        <th>BRAND</th>
+    </tr>
+
+    @foreach (dynamic hit in Model.SearchResults.hits.hit)
+    {
+        <tr>
+            <td>@hit.id</td>
+            <td>@hit.data.action</td>
+            <td>@hit.data.caliber</td>
+            <td>@hit.data.color</td>
+            <td>@hit.data.description</td>
+            <td>@hit.data.brand</td>
+        </tr>
+    }
+
+</table>
+
+<h3>Facets</h3>
+foreach (dynamic facet in Model.SearchResults.facetsResults)
+{
+    <p>@facet.Name</p>
+    <ol>
+        @foreach (dynamic bucket in facet.Buckets)
+        {
+            <li>
+                @{string linkStr = @bucket.value + "(" + @bucket.count + ")";}
+                @if (facet.Name == "action")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = bucket.value, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "barrellength")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = bucket.value, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "brand")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = bucket.value, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "caliber")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = bucket.value, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "category")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = bucket.value, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "color")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = bucket.value, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "department")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = bucket.value, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "finish")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = bucket.value, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "rating")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = bucket.value, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else if (facet.Name == "type")
+                {
+                    @Ajax.ActionLink(linkStr, "GetSearchResults", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = bucket.value, Keyword = Model.Keyword, Start = 0, SearchResults = null }, new AjaxOptions { UpdateTargetId = "dvResults", InsertionMode = InsertionMode.Replace, HttpMethod = "GET" })
+                }
+                else
+                {
+                    @linkStr
+                }
+            </li>
+        }
+
+    </ol>
+}
+}

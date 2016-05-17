@@ -18,31 +18,7 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.UserAction, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.UserAction, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.UserAction, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Gauge, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Gauge, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Gauge, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Manufacturer, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Manufacturer, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Manufacturer, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-
-
+               
                 <div class="form-group">
                     <div class="col-md-offset-2 col-md-10">
                         <input type="submit" value="Save" class="btn btn-default" />
@@ -50,6 +26,16 @@
                 </div>
 
                 @Html.HiddenFor(m => m.Start)
+                @Html.HiddenFor(m => m.mAction)
+                @Html.HiddenFor(m => m.Barrellength)
+                @Html.HiddenFor(m => m.Brand)
+                @Html.HiddenFor(m => m.Caliber)
+                @Html.HiddenFor(m => m.Category)
+                @Html.HiddenFor(m => m.Color)
+                @Html.HiddenFor(m => m.Department)
+                @Html.HiddenFor(m => m.Finish)
+                @Html.HiddenFor(m => m.Rating)
+                @Html.HiddenFor(m => m.Type)
 
 
             }

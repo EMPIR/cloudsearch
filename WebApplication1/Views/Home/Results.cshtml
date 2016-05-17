@@ -6,47 +6,54 @@
 <h2>Results</h2>
 <h2>Search Parameters</h2>
 <p>Keyword: @Model.Keyword</p>
-<p>UserAction: @Model.UserAction</p>
-<p>Gauge: @Model.Gauge</p>
-<p>Manufacturer: @Model.Manufacturer</p>
+<p>Action: @Model.mAction</p>
+<p>Barrel Length: @Model.Barrellength</p>
+<p>Brand: @Model.Brand</p>
+<p>Caliber: @Model.Caliber</p>
+<p>Category: @Model.Category</p>
+<p>Color: @Model.Color</p>
+<p>Department: @Model.Department</p>
+<p>Finish: @Model.Finish</p>
+<p>Rating: @Model.Rating</p>
+<p>Type: @Model.Type</p>
 <h3>Total Found @Model.SearchResults.hits.found</h3>
 <p>
     @if (Model.Start != 0)
     {
-        @Html.ActionLink("First", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = 0, SearchResults = null })
+        @Html.ActionLink("First", "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword,  Start = 0, SearchResults = null })
         @:|
-        @Html.ActionLink("Previous", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.Start - 10, SearchResults = null })
+        @Html.ActionLink("Previous", "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword,  Start = Model.Start - 10, SearchResults = null })
         @:|
     }
     @(Model.Start + 1) to @(Model.Start + 10)
     @if (Model.Start < Model.SearchResults.hits.found - 10)
     {
         @:|
-         @Html.ActionLink("Next", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.Start + 10, SearchResults = null })
+         @Html.ActionLink("Next", "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = Model.Start + 10, SearchResults = null })
          @:|
-         @Html.ActionLink("Last", "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = Model.SearchResults.hits.found - 10, SearchResults = null })
+         @Html.ActionLink("Last", "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = Model.SearchResults.hits.found - 10, SearchResults = null })
         
     }
 </p>
 <table>
     <tr>
         <th>ID</th>
-        <th>USER ACTION</th>
+        <th>ACTION</th>
         <th>CALIBER GAUGE</th>
-        <th>IS FIREARM</th>
+        <th>COLOR</th>
         <th>DESCRIPTION</th>
-        <th>MANUFACTURER</th>
+        <th>BRAND</th>
     </tr>
 
     @foreach (dynamic hit in Model.SearchResults.hits.hit)
     {
         <tr>
             <td>@hit.id</td>
-            <td>@hit.data.user_action</td>
-            <td>@hit.data.user_caliber_gauge</td>
-            <td>@hit.data.user_is_firearm</td>
-            <td>@hit.data.descr</td>
-            <td>@hit.data.user_manufacturer</td>
+            <td>@hit.data.action</td>
+            <td>@hit.data.caliber</td>
+            <td>@hit.data.color</td>
+            <td>@hit.data.description</td>
+            <td>@hit.data.brand</td>
         </tr>
     }
 
@@ -61,15 +68,47 @@
         {
             <li>
                 @{string linkStr = @bucket.value +"("+@bucket.count+")";}
-                @if(facet.Name == "user_action")
+                @if(facet.Name == "action")
                 { 
-                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = Model.Gauge, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = bucket.value, Start = 0, SearchResults = null })
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = bucket.value, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
                 }
-                else if(facet.Name == "user_caliber_gauge")
+                else if(facet.Name == "barrellength")
                 {
-                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { Gauge = bucket.value, Manufacturer = Model.Manufacturer, Keyword = Model.Keyword, UserAction = Model.UserAction, Start = 0, SearchResults = null })
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = bucket.value, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
                 }
-                else if(facet.Name == "user_is_firearm")
+                else if(facet.Name == "brand")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = bucket.value, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "caliber")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = bucket.value, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "category")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = bucket.value, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "color")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = bucket.value, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "department")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department =bucket.value, Finish = Model.Finish, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "finish")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = bucket.value, Rating = Model.Rating, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "rating")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = bucket.value, Type = Model.Type, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else if (facet.Name == "type")
+                {
+                    @Html.ActionLink(linkStr, "Results", new WebApplication1.Models.ViewModels.QueryForm { mAction = Model.mAction, Barrellength = Model.Barrellength, Brand = Model.Brand, Caliber = Model.Caliber, Category = Model.Category, Color = Model.Color, Department = Model.Department, Finish = Model.Finish, Rating = Model.Rating, Type = bucket.value, Keyword = Model.Keyword, Start = 0, SearchResults = null })
+                }
+                else
                 {
                     @linkStr
                 }

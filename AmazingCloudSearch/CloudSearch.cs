@@ -89,18 +89,23 @@ namespace AmazingCloudSearch
             }
         }
 
-        private SearchResult<T> SearchWithException(SearchQuery<T> query)
+        private SearchResult<T> SearchWithException(string searchUrlRequest)
         {
-            var searchUrlRequest = _queryBuilder.BuildSearchQuery(query);
-
             var jsonResult = _webHelper.GetRequest(searchUrlRequest);
 
             if (jsonResult.IsError)
-                return new SearchResult<T> {error = jsonResult.exeption, IsError = true};
+                return new SearchResult<T> { error = jsonResult.exeption, IsError = true };
 
-            var jsonDynamic = JsonConvert.DeserializeObject<dynamic>(jsonResult.json);
+            dynamic jsonDynamic = JsonConvert.DeserializeObject<dynamic>(jsonResult.json);
 
-            var hit = RemoveHit(jsonDynamic);
+            //var hit = RemoveHit(jsonDynamic);
+            dynamic hit = null;
+            if (jsonDynamic.hits != null)
+            {
+                hit = jsonDynamic.hits.hit;
+                jsonDynamic.hits.hit = null;
+            }
+
 
             var resultWithoutHit = JsonConvert.SerializeObject(jsonDynamic);
 
@@ -113,13 +118,21 @@ namespace AmazingCloudSearch
                 searchResult.IsError = true;
                 return searchResult;
             }
-            
+
             _hitFeeder.Feed(searchResult, hit);
 
             return searchResult;
         }
 
-        private dynamic RemoveHit(dynamic jsonDynamic)
+        private SearchResult<T> SearchWithException(SearchQuery<T> query)
+        {
+            
+            var searchUrlRequest = _queryBuilder.BuildSearchQuery(query);
+            return SearchWithException(searchUrlRequest);
+           
+        }
+
+        public dynamic RemoveHit(dynamic jsonDynamic)
         {
             dynamic hit = null;
             if (jsonDynamic.hits != null)
@@ -137,8 +150,10 @@ namespace AmazingCloudSearch
             //File.WriteAllText(@"C:\Users\davidguinnip\Documents\action.json",actionJson);
             //actionJson = File.ReadAllText(@"C:\Users\davidguinnip\Documents\action_delete.json");
             var jsonResult = _webHelper.PostRequest(_documentUri, actionJson);
-
-            if (jsonResult.IsError)
+            dynamic json = JsonConvert.DeserializeObject(jsonResult.json);
+            
+            //if (jsonResult.IsError)
+            if(json.status != "success")
                 return new R { IsError = true, status = "error", errors = new List<Error> { new Error { message = jsonResult.exeption } } };
 
             R result = JsonConvert.DeserializeObject<R>(jsonResult.json);

@@ -1,0 +1,49 @@
+﻿
+@model WebApplication1.Models.ViewModels.QueryForm
+@{
+    ViewBag.Title = "Ajax Search";
+}
+
+<h2>Ajax Search</h2>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#searchButton').click(function () {
+                
+                var keyword = $('#keywordinput').val();
+                
+                $('#dvResults').load('/Home/GetSearchResults?Keyword=' + keyword + '&' +
+                    'mAction=' + '&Barrellength=&Brand=&Caliber=&Category=&Color=&Department=&Finish=&Rating=&Type=&Start=0');
+            });
+        })
+    </script>
+
+}
+
+
+
+
+
+<div class="row">
+    <div class="col-md-8">
+        <section id="search">
+            <div class="form-group">
+                @Html.LabelFor(m => m.Keyword, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Keyword, new { @class = "form-control", @id="keywordinput" })
+                    @Html.ValidationMessageFor(m => m.Keyword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Search" class="btn btn-default" id="searchButton" />
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<div id="dvResults">
+    @{Html.RenderPartial("AjaxResults", Model);}
+</div>

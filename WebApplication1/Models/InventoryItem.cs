@@ -47,52 +47,130 @@ namespace WebApplication1.Models
 
     public class CloudSearchService
     {
-        public static AmazingCloudSearch.Contract.Result.SearchResult<InventoryItem> Query(string keyword, string gauge, string useraction, string manufacturer, bool facets, int start)
+        public static AmazingCloudSearch.Contract.Result.SearchResult<Gun> Query(string keyword, 
+            string action, string barrellength, string brand,
+            string caliber, string category, string color,
+            string department, string finish, string rating, string type,
+            
+            bool facets, int start)
         {
             string awsAccessKey = WebConfigurationManager.AppSettings["AWSCloudSearchKey"];
 
-            var cloudSearch = new CloudSearch<InventoryItem>(awsAccessKey, "2013-01-01");
-            var searchQuery = new SearchQuery<InventoryItem>();
+            var cloudSearch = new CloudSearch<Gun>(awsAccessKey, "2013-01-01");
+            var searchQuery = new SearchQuery<Gun>();
             List<Facet> liFacet = null;
             if(facets)
             {
                 liFacet = new List<Facet>();
-                liFacet.Add(new Facet { Name = "user_caliber_gauge" });
-                liFacet.Add(new Facet { Name = "user_action" });
-                liFacet.Add(new Facet { Name = "user_is_firearm" });
+                liFacet.Add(new Facet { Name = "action" });
+                liFacet.Add(new Facet { Name = "barrellength" });
+                liFacet.Add(new Facet { Name = "brand" });
+                liFacet.Add(new Facet { Name = "caliber" });
+                liFacet.Add(new Facet { Name = "category" });
+                liFacet.Add(new Facet { Name = "color" });
+                liFacet.Add(new Facet { Name = "department" });
+                liFacet.Add(new Facet { Name = "finish" });
+                liFacet.Add(new Facet { Name = "rating" });
+                liFacet.Add(new Facet { Name = "type" });
             }
-            StringBooleanCondition gaugeCondition = null;
+            
             StringBooleanCondition actionCondition = null;
-            StringBooleanCondition manufacturerCondition = null;
+            StringBooleanCondition barrellengthCondition = null;
+            StringBooleanCondition brandCondition = null;
+            StringBooleanCondition caliberCondition = null;
+            StringBooleanCondition categoryCondition = null;
+            StringBooleanCondition colorCondition = null;
+            StringBooleanCondition departmentCondition = null;
+            StringBooleanCondition finishCondition = null;
+            StringBooleanCondition ratingCondition = null;
+            StringBooleanCondition typeCondition = null;
+            
 
             BooleanQuery bQuery = null;
             //caliber action brand capacity
-            if (!string.IsNullOrEmpty(gauge))
-                gaugeCondition = new StringBooleanCondition("user_caliber_gauge", gauge, false);
-            if (!string.IsNullOrEmpty(useraction))
-                actionCondition = new StringBooleanCondition("user_action", useraction, false);
-            if (!string.IsNullOrEmpty(manufacturer))
-                manufacturerCondition = new StringBooleanCondition("user_manufacturer", manufacturer, false);
+            if (!string.IsNullOrEmpty(action))
+                actionCondition = new StringBooleanCondition("action", action, false);
+            if (!string.IsNullOrEmpty(barrellength))
+                barrellengthCondition = new StringBooleanCondition("barrellength", barrellength, false);
+            if (!string.IsNullOrEmpty(brand))
+                brandCondition = new StringBooleanCondition("brand", brand, false);
+            if (!string.IsNullOrEmpty(caliber))
+                caliberCondition = new StringBooleanCondition("caliber", caliber, false);
+            if (!string.IsNullOrEmpty(category))
+                categoryCondition = new StringBooleanCondition("category", category, false);
+            if (!string.IsNullOrEmpty(color))
+                colorCondition = new StringBooleanCondition("color", color, false);
+            if (!string.IsNullOrEmpty(department))
+                departmentCondition = new StringBooleanCondition("department", department, false);
+            if (!string.IsNullOrEmpty(finish))
+                finishCondition = new StringBooleanCondition("finish", finish, false);
+            if (!string.IsNullOrEmpty(rating))
+                ratingCondition = new StringBooleanCondition("rating", rating, false);
+            if (!string.IsNullOrEmpty(type))
+                typeCondition = new StringBooleanCondition("type", type, false);
+           
 
             //var yCondition = new IntBooleanCondition("year");
             //yCondition.SetInterval(2000, 2004);
 
-            if (gaugeCondition != null)
-            {
-                bQuery = new BooleanQuery();
-                bQuery.Conditions.Add(gaugeCondition);
-            }
             if (actionCondition != null)
             {
-                if (bQuery == null)
-                    bQuery = new BooleanQuery();
+                bQuery = new BooleanQuery();
                 bQuery.Conditions.Add(actionCondition);
             }
-            if (manufacturerCondition != null)
+            if (barrellengthCondition != null)
             {
                 if (bQuery == null)
                     bQuery = new BooleanQuery();
-                bQuery.Conditions.Add(manufacturerCondition);
+                bQuery.Conditions.Add(barrellengthCondition);
+            }
+            if (brandCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(brandCondition);
+            }
+            if (caliberCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(caliberCondition);
+            }
+            if (categoryCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(categoryCondition);
+            }
+            if (colorCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(colorCondition);
+            }
+            if (departmentCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(departmentCondition);
+            }
+            if (finishCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(finishCondition);
+            }
+            if (ratingCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(ratingCondition);
+            }
+            if (typeCondition != null)
+            {
+                if (bQuery == null)
+                    bQuery = new BooleanQuery();
+                bQuery.Conditions.Add(typeCondition);
             }
 
             searchQuery.BooleanQuery = bQuery;
