@@ -39,6 +39,8 @@ namespace TestConsole
         public string Finish { get; set; } //facet
         public string Rating { get; set; } //facet
         public DateTime LastUpdated { get; set; }
+        public string Capacity { get; set; }
+        public string MetaTags { get; set; }
 
         private static Regex _invalidChars = new Regex(
 @"(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFEFF\uFFFE\uFFFF]",
@@ -119,6 +121,12 @@ RegexOptions.Compiled);
         [JsonProperty("lastupdated")]
         public DateTime lastupdated { get; set; }
 
+        [JsonProperty("capacity")]
+        public string capacity { get; set; }
+
+        [JsonProperty("metatags")]
+        public string metatags { get; set; } //facet
+
 
 
 
@@ -144,6 +152,9 @@ RegexOptions.Compiled);
             ret.barrellength = g.BarrelLength != null ? g.BarrelLength : "Unknown";
             ret.color = g.Color != null ? g.Color : "Unknown";
             ret.finish = g.Finish != null ? g.Finish : "Unknown";
+
+            ret.capacity = g.Capacity != null ? g.Finish : "";
+            ret.metatags = g.MetaTags != null ? g.MetaTags : "";
             ret.rating = g.Rating;
             ret.id = g.ItemNo;
             ret.lastupdated = g.LastUpdated.ToUniversalTime();
@@ -417,7 +428,7 @@ RegexOptions.Compiled);
             List<Gun> gunList = Gun.FromGunAPI(guns);
             string awsAccessKey = WebConfigurationManager.AppSettings["AWSCloudSearchKey"];
             var cloudSearch = new CloudSearch<Gun>(awsAccessKey, "2013-01-01");
-            /*int i = 1;
+           int i = 1;
             Console.WriteLine("Start Time " + DateTime.Now.ToLongTimeString());
             List<Gun> updateGunList = new List<Gun>();
             foreach(Gun gun in gunList)
@@ -432,7 +443,7 @@ RegexOptions.Compiled);
                     //cloudSearch.Update(gun);
                     updateGunList.Add(gun);
                 }
-                if(updateGunList.Count > 4999)
+                if(updateGunList.Count > 499)
                 {
                     Console.WriteLine("Performing Batch Update");
                     cloudSearch.Add(updateGunList);
@@ -448,8 +459,8 @@ RegexOptions.Compiled);
             Console.WriteLine("Done");
             updateGunList.Clear();
             Console.WriteLine("End Time " + DateTime.Now.ToLongTimeString());
-            */
-            Console.WriteLine("Start Time " + DateTime.Now.ToLongTimeString());
+            
+            /*Console.WriteLine("Start Time " + DateTime.Now.ToLongTimeString());
             var searchQuery = new SearchQuery<Gun>();
             StringBooleanCondition itemnoCondition = null;
             itemnoCondition = new StringBooleanCondition("itemno", Guid.NewGuid().ToString(), false);
@@ -476,7 +487,7 @@ RegexOptions.Compiled);
 
             Console.WriteLine("End Time " + DateTime.Now.ToLongTimeString());
 
-
+            */
 
             /*32274
 32376

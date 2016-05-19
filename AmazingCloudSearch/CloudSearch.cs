@@ -91,10 +91,10 @@ namespace AmazingCloudSearch
 
         private SearchResult<T> SearchWithException(string searchUrlRequest)
         {
-            var jsonResult = _webHelper.GetRequest(searchUrlRequest);
+             var jsonResult = _webHelper.GetRequest(searchUrlRequest);
 
             if (jsonResult.IsError)
-                return new SearchResult<T> { error = jsonResult.exeption, IsError = true };
+                return new SearchResult<T> {error = jsonResult.exeption, IsError = true};
 
             dynamic jsonDynamic = JsonConvert.DeserializeObject<dynamic>(jsonResult.json);
 
@@ -105,7 +105,7 @@ namespace AmazingCloudSearch
                 hit = jsonDynamic.hits.hit;
                 jsonDynamic.hits.hit = null;
             }
-
+            
 
             var resultWithoutHit = JsonConvert.SerializeObject(jsonDynamic);
 
@@ -118,7 +118,7 @@ namespace AmazingCloudSearch
                 searchResult.IsError = true;
                 return searchResult;
             }
-
+            
             _hitFeeder.Feed(searchResult, hit);
 
             return searchResult;
